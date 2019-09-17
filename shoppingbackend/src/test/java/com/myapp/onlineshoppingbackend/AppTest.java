@@ -1,4 +1,4 @@
-package com.myapp.shoppingbackend;
+package com.myapp.onlineshoppingbackend;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
