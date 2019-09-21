@@ -11,6 +11,8 @@ import javax.persistence.Id;
 
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Component
 @Entity
 public class Product implements Serializable {
@@ -28,6 +30,7 @@ public class Product implements Serializable {
 
 	private String brand;
 
+	@JsonIgnore
 	private String description;
 
 	@Column(name = "unit_price")
@@ -35,12 +38,15 @@ public class Product implements Serializable {
 
 	private int quantity;
 
+	@JsonIgnore
 	@Column(name = "is_active")
 	private boolean active;
 
+	@JsonIgnore
 	@Column(name = "category_id")
 	private int categoryId;
 
+	@JsonIgnore
 	@Column(name = "supplier_id")
 	private int supplierId;
 

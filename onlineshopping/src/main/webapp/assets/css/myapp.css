@@ -8,7 +8,7 @@ html {
 }
 
 body {
-	padding-top: 56px;
+	padding-top: 0px;
 	height: 100%;
 }
 
@@ -25,11 +25,16 @@ footer {
 }
 
 .content {
-	padding-bottom: 30%;
+	padding-bottom: 10%;
 }
 
 .footer {
 	position: absolute;
 	bottom: 15px;
 	height: 60px;
+}
+
+.dataTableImg {
+	width:100px;
+	width:100px;
 }
