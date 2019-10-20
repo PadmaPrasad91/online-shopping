@@ -1,11 +1,18 @@
 package com.myapp.onlineshopping.controller;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.myapp.onlineshopping.exception.ProductNotFoundException;
@@ -91,15 +98,16 @@ public class PageController {
 
 	/*
 	 * Viewing a single product
-	 * */
+	 */
 
 	@RequestMapping(value = "/show/{id}/product")
 	public ModelAndView showSingleProduct(@PathVariable int id) throws ProductNotFoundException {
 
 		ModelAndView mv = new ModelAndView("page");
 		Product product = productDao.get(id);
-		
-		if(product == null) throw new ProductNotFoundException();
+
+		if (product == null)
+			throw new ProductNotFoundException();
 
 		// update the view count
 		product.setViews(product.getViews() + 1);
@@ -110,6 +118,56 @@ public class PageController {
 		mv.addObject("userClickShowProduct", true);
 
 		return mv;
+	}
+
+	// having simillar mapping to web-flow
+	@RequestMapping(value = "/register")
+	public ModelAndView register() {
+		ModelAndView mv = new ModelAndView("page");
+		mv.addObject("title", "Sign Up");
+
+		return mv;
+	}
+
+	/* Login */
+
+	@RequestMapping(value = "/login")
+	public ModelAndView login(@RequestParam(name = "error", required = false) String error,
+			@RequestParam(name = "logout", required = false) String logout) {
+		ModelAndView mv = new ModelAndView("login");
+
+		if (error != null) {
+			mv.addObject("message", "Invalid Username or Password!");
+		}
+
+		if (logout != null) {
+			mv.addObject("logout", "User has successfully logged out!");
+		}
+		mv.addObject("title", "Login");
+		return mv;
+	}
+
+	/* access denied page */
+	@RequestMapping(value = "/access-denied")
+	public ModelAndView accessDenied() {
+		ModelAndView mv = new ModelAndView("error");
+		mv.addObject("title", "403 access-denied");
+		mv.addObject("errorTitle", "You Can't access this page!");
+		mv.addObject("errorDescription", "You are not authorized to view this page! ");
+		return mv;
+	}
+
+	/* logout */
+	@RequestMapping(value = "perform-logout")
+	public String logout(HttpServletRequest request, HttpServletResponse response) {
+
+		// fetch the authentication
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+		if (auth != null) {
+			new SecurityContextLogoutHandler().logout(request, response, auth);
+		}
+		return "redirect:login?logout";
 	}
 
 }

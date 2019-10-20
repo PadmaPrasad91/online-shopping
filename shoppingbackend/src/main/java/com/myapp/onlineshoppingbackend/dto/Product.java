@@ -8,8 +8,12 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Transient;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
 
 import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -26,19 +30,22 @@ public class Product implements Serializable {
 
 	private String code;
 
+	@NotBlank(message = "Please enter the Product name!")
 	private String name;
 
+	@NotBlank(message = "Please enter the Brand name!")
 	private String brand;
 
 	@JsonIgnore
+	@NotBlank(message = "Please enter the description for Product!")
 	private String description;
 
 	@Column(name = "unit_price")
+	@Min(value = 1, message = "The price cannot be less than 1!")
 	private double unitPrice;
 
 	private int quantity;
 
-	@JsonIgnore
 	@Column(name = "is_active")
 	private boolean active;
 
@@ -53,6 +60,9 @@ public class Product implements Serializable {
 	private int purchases;
 
 	private int views;
+	
+	@Transient
+	private MultipartFile file;
 
 // default constructor
 	public Product() {
@@ -156,6 +166,14 @@ public class Product implements Serializable {
 
 	public void setViews(int views) {
 		this.views = views;
+	}
+
+	public MultipartFile getFile() {
+		return file;
+	}
+
+	public void setFile(MultipartFile file) {
+		this.file = file;
 	}
 
 	@Override
